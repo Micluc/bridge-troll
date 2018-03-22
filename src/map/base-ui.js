@@ -3,10 +3,12 @@
 const log = require('../log');
 const svgMarker = require('../svg-marker');
 
+const sunCalc = require('suncalc');
 const leaflet = require('leaflet');
 const EventEmitter = require('events').EventEmitter;
 
-const tileUrl = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+
+
 const attribution =
   '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
@@ -23,6 +25,18 @@ class BaseUI extends EventEmitter {
   }
 
   init(lat, lng) {
+    let curDay = new Date();
+    let curHour = curDay.getHours();
+    let time = sunCalc.getTimes(new Date(), lat, lng);
+    let tileUrl;
+
+    if(curHour >= time.sunset.getHours() || curHour < time.sunrise.getHours()){
+      tileUrl = 'https://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png';
+    }
+    else{
+      tileUrl = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+    }
+
     let mapEl = document.createElement('div');
     mapEl.id = 'map';
     document.body.appendChild(mapEl);
