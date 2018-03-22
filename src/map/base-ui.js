@@ -25,16 +25,16 @@ class BaseUI extends EventEmitter {
   }
 
   init(lat, lng) {
-    let curDay = new Date();
-    let curHour = curDay.getHours();
-    let time = sunCalc.getTimes(new Date(), lat, lng);
+
+    //let hour = new Date().getHours()+12; //To check to see if the opposite time map works cause its 1am
+    let hour = new Date().getHours();
     let tileUrl;
 
-    if(curHour >= time.sunset.getHours() || curHour < time.sunrise.getHours()){
-      tileUrl = 'https://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png';
+    if(hour >= sunCalc.getTimes(new Date(), lat, lng).sunset.getHours() || hour < sunCalc.getTimes(new Date(), lat, lng).sunrise.getHours()){
+      tileUrl = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
     }
     else{
-      tileUrl = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+      tileUrl = 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
     }
 
     let mapEl = document.createElement('div');
